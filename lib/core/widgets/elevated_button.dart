@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ReusableElevatedButton extends StatelessWidget {
   final String text;
   final IconData icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const ReusableElevatedButton({
     super.key,
