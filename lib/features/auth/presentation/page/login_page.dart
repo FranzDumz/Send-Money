@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sample/core/constants/login_strings.dart';
-import 'package:sample/features/auth/presentation/cubit/login_cubit.dart';
+import 'package:sample/features/auth/presentation/cubit/login/login_cubit.dart';
+import 'package:sample/features/auth/presentation/cubit/session/session_cubit.dart';
 
+import '../../../../core/storage/flutter_secure_storage.dart';
 import '../../../../core/widgets/loading_dialog.dart';
 import '../../../../data/datasources/login_datasources.dart';
 import '../../../../data/repository/auth_repositoryl.dart';
@@ -14,14 +17,18 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => LoginCubit(
-        LoginUseCase(
-          LoginRepository(
-            LoginRemoteDataSource(),
+      create: (_) => SessionCubit(SecureStorageService()),
+      child: BlocProvider(
+        create: (context) => LoginCubit(
+          LoginUseCase(
+            LoginRepository(
+              LoginRemoteDataSource(),
+            ),
           ),
+          context.read<SessionCubit>(), // inject session cubit here
         ),
+        child: const LoginView(),
       ),
-      child: const LoginView(),
     );
   }
 }
@@ -42,9 +49,9 @@ class _LoginViewState extends State<LoginView> {
   void _onLogin() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<LoginCubit>().login(
-        usernameController.text.trim(),
-        passwordController.text.trim(),
-      );
+            usernameController.text.trim(),
+            passwordController.text.trim(),
+          );
     }
   }
 
@@ -75,6 +82,7 @@ class _LoginViewState extends State<LoginView> {
                   } else if (state is LoginSuccess) {
                     if (Navigator.canPop(context)) {
                       LoadingDialog.hide(context);
+                      context.go('/dashboard');
                     }
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text(LoginStrings.loginSuccess)),
@@ -105,8 +113,6 @@ class _LoginViewState extends State<LoginView> {
                           ),
                         ),
                         const SizedBox(height: 30),
-
-
                         TextFormField(
                           key: const Key("usernameField"),
                           controller: usernameController,
@@ -126,7 +132,6 @@ class _LoginViewState extends State<LoginView> {
                           },
                         ),
                         const SizedBox(height: 16),
-
                         TextFormField(
                           key: const Key("passwordField"),
                           controller: passwordController,
@@ -161,7 +166,6 @@ class _LoginViewState extends State<LoginView> {
                           },
                         ),
                         const SizedBox(height: 24),
-
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
@@ -197,4 +201,3 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
-

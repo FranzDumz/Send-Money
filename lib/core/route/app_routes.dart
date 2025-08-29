@@ -1,13 +1,21 @@
-// lib/core/routes/app_router.dart
-import 'package:flutter/material.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:sample/features/auth/presentation/page/login_page.dart';
+
+import '../../features/dashboard/presentation/dashboard.dart';
+import '../../features/send_money/presentation/send_money.dart';
+import '../../features/splash/splash.dart';
 
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/splash',
     routes: [
+      GoRoute(
+        path: '/splash',
+        name: 'splash',
+        builder: (context, state) => const SplashPage(),
+      ),
       GoRoute(
         path: '/login',
         name: 'login',
@@ -16,18 +24,18 @@ class AppRouter {
       GoRoute(
         path: '/dashboard',
         name: 'dashboard',
-       // builder: (context, state) => const DashboardPage(),
+        builder: (context, state) => const SendMoneyDashBoard(),
       ),
       GoRoute(
         path: '/send',
         name: 'sendMoney',
-       // builder: (context, state) => const SendMoneyPage(),
+       builder: (context, state) => const SendMoneyPage(),
       ),
-      GoRoute(
-        path: '/transactions',
-        name: 'transactions',
-       // builder: (context, state) => const TransactionsPage(),
-      ),
+      // GoRoute(
+      //   path: '/transactions',
+      //   name: 'transactions',
+      //  builder: (context, state) => const TransactionsPage(),
+      // ),
     ],
   );
 }
