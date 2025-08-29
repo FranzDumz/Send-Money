@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/storage/flutter_secure_storage.dart';
 import '../../../../domain/entities/user_entity.dart';
 import '../../../../domain/usecases/login_usecase.dart';
 
@@ -9,20 +10,19 @@ class LoginCubit extends Cubit<LoginState> {
 
   LoginCubit(this.loginUseCase) : super(LoginInitial());
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(String username, String password) async {
+    if (username.isEmpty || password.isEmpty) {
+      emit(LoginError("Email and password cannot be empty"));
+      return;
+    }
+
     emit(LoginLoading());
 
     try {
-      // Simulate async login logic (replace this with real use case call)
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (email == 'test@example.com' && password == '123456') {
-        emit(LoginSuccess(UserEntity(id: "1", email: email, name: 'Francis')));
-      } else {
-        emit(LoginError('Invalid credentials'));
-      }
+      final user = await loginUseCase(LoginParams(username: username, password: password));
+      emit(LoginSuccess(user));
     } catch (e) {
-      emit(LoginError('Something went wrong'));
+      emit(LoginError(e.toString()));
     }
   }
 }
