@@ -10,29 +10,31 @@ class LoginRemoteDataSource {
       final response = await _apiClient.get('users');
       final List<dynamic> users = response.data;
 
-
-      //Compare users based on the returned list of users
-      final matchingUser = users.firstWhere(
-            (u) => u['username'] == username && u['password'] == password,
-        orElse: () => null,
-      );
+      // Safely find the user
+      Map<String, dynamic>? matchingUser;
+      try {
+        matchingUser = users.firstWhere(
+              (u) => u['username'] == username && u['password'] == password,
+        );
+      } catch (_) {
+        matchingUser = null;
+      }
 
       if (matchingUser == null) {
-        throw 'Invalid username or password';
+        throw Exception('Invalid username or password');
       }
 
       return UserEntity(
         id: matchingUser['id'].toString(),
         name: matchingUser['name'] ?? '',
         username: matchingUser['username'] ?? '',
-        password: matchingUser['password'] ?? '',
         balance: (matchingUser['balance'] ?? 0).toDouble(),
         transactions: (matchingUser['transactions'] as List<dynamic>? ?? [])
-            .map((t) => t.toString())
+            .map((t) => Map<String, dynamic>.from(t as Map))
             .toList(),
       );
     } catch (e) {
-      throw e.toString();
+      throw Exception('Login failed: $e');
     }
   }
 }

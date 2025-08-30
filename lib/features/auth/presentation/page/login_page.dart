@@ -8,7 +8,7 @@ import 'package:sample/features/auth/presentation/cubit/session/session_cubit.da
 import '../../../../core/storage/flutter_secure_storage.dart';
 import '../../../../core/widgets/loading_dialog.dart';
 import '../../../../data/datasources/login_datasources.dart';
-import '../../../../data/repository/auth_repositoryl.dart';
+import '../../../../data/repository/auth_repository_impl.dart';
 import '../../../../domain/usecases/login_usecase.dart';
 
 class LoginPage extends StatelessWidget {

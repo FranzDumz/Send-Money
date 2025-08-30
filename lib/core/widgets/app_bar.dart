@@ -7,12 +7,14 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
   final bool showLogout;
+  final bool showBack;
 
   const ReusableAppBar({
     super.key,
     required this.title,
     this.actions,
     this.showLogout = false,
+    this.showBack = false, // default: show back
   });
 
   @override
@@ -44,6 +46,19 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       backgroundColor: theme.appBarTheme.backgroundColor,
       elevation: theme.appBarTheme.elevation,
+      leading: showBack
+          ? IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        tooltip: 'Back',
+        onPressed: () {
+          if (context.canPop()) {
+            context.pop(); // GoRouter pop
+          } else {
+            context.go('/'); // fallback (home/dashboard)
+          }
+        },
+      )
+          : null,
       actions: finalActions,
     );
   }
