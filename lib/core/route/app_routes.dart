@@ -2,9 +2,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:sample/features/auth/presentation/page/login_page.dart';
 
-import '../../features/dashboard/presentation/dashboard.dart';
-import '../../features/send_money/presentation/send_money.dart';
+import '../../features/dashboard/presentation/dashboard_page.dart';
+import '../../features/send_money/presentation/send_money_page.dart';
 import '../../features/splash/splash.dart';
+import '../../features/transaction_history/presentation/transaction_history_page.dart';
 
 
 class AppRouter {
@@ -31,11 +32,11 @@ class AppRouter {
         name: 'sendMoney',
        builder: (context, state) => const SendMoneyPage(),
       ),
-      // GoRoute(
-      //   path: '/transactions',
-      //   name: 'transactions',
-      //  builder: (context, state) => const TransactionsPage(),
-      // ),
+      GoRoute(
+        path: '/transactions',
+        name: 'transactions',
+       builder: (context, state) => const TransactionHistoryPage(),
+      ),
     ],
   );
 }
