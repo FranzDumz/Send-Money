@@ -1,74 +1,51 @@
-import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/storage/flutter_secure_storage.dart';
 import '../../../domain/entities/user_entity.dart';
-import '../../../domain/usecases/login_usecase.dart';
+import '../../auth/presentation/cubit/session/session_cubit.dart';
 import 'dashboard_state.dart';
 
 class DashboardCubit extends Cubit<DashBoardState> {
-  final SecureStorageService _storage = SecureStorageService();
+  final SessionCubit sessionCubit;
   UserEntity? _user;
 
-  DashboardCubit() : super(DashBoardInitial());
+  DashboardCubit({required this.sessionCubit}) : super(DashBoardInitial());
 
   UserEntity? get user => _user;
 
-  /// Load user from secure storage
-  Future<void> loadUserFromStorage() async {
-    final jsonString = await _storage.read('user');
-    if (jsonString != null) {
-      try {
-        final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-        _user = UserEntity.fromJson(jsonMap);
-        emit(UserRefreshSuccess());
-      } catch (_) {
-        emit(UserRefreshError());
-      }
+  /// Load user from SessionCubit
+  Future<void> loadUserFromSession() async {
+    final currentUser = sessionCubit.getCurrentUser();
+    if (currentUser != null) {
+      _user = currentUser;
+      emit(UserRefreshSuccess());
     } else {
-      emit(DashBoardInitial());
+      emit(UserRefreshError());
     }
   }
 
-  /// Refresh user data (e.g., balance, points)
+  /// Refresh user data (e.g., from API or storage via sessionCubit)
   Future<void> refreshUserData() async {
-    if (_user == null) {
-      emit(UserRefreshError());
-      return;
-    }
-
     emit(UserRefreshLoading());
 
-    try {
-      // Example: simulate a balance update
-      _user = UserEntity(
-        id: _user!.id,
-        username: _user!.username,
-        name: _user!.name,
-        password: _user!.password,
-        balance: _user!.balance,
-        transactions: _user!.transactions,
-      );
-
-      // Save updated user to secure storage
-      await _storage.write('user', jsonEncode(_user!.toJson()));
-
+    final currentUser =  sessionCubit.getCurrentUser();
+    if (currentUser != null) {
+      _user = currentUser;
       emit(UserRefreshSuccess());
-    } catch (_) {
+    } else {
       emit(UserRefreshError());
     }
   }
 
-  /// Set current user (after login)
+  /// Set current user (delegates to SessionCubit)
   Future<void> setUser(UserEntity user) async {
+    await sessionCubit.saveSession(user);
     _user = user;
-    await _storage.write('user', jsonEncode(user.toJson()));
     emit(UserRefreshSuccess());
   }
 
-  /// Clear user on logout
+  /// Clear user (delegates to SessionCubit)
   Future<void> clearUser() async {
+    await sessionCubit.clearSession();
     _user = null;
-    await _storage.delete('user');
     emit(DashBoardInitial());
   }
 }

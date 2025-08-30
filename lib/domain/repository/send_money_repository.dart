@@ -1,5 +1,14 @@
+
+
+
+
 import '../entities/user_entity.dart';
 
 abstract class SendMoneyRepository {
-  Future<UserEntity> login(String username, String password);
+  Future<String> sendMoney({
+    required String recipientName,
+    required String senderId,
+    required double amount,
+  });
 }
+
