@@ -163,7 +163,6 @@ class _SendMoneyDashBoardViewState extends State<_SendMoneyDashBoardView> {
                               text: DashBoardStrings.transactions,
                               icon: Icons.history,
                               onPressed: () {
-
                                 context.push('/transactions');
                               },
                             ),

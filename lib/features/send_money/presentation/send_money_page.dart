@@ -18,9 +18,6 @@ class SendMoneyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sessionCubit = context.read<SessionCubit>();
-    final currentUser = sessionCubit.getCurrentUser();
-
     return BlocProvider(
       create: (_) => SendMoneyCubit(
         SendMoneyUseCase(
@@ -29,14 +26,13 @@ class SendMoneyPage extends StatelessWidget {
           ),
         ),
       ),
-      child: _SendMoneyView(currentUser: currentUser),
+      child: const _SendMoneyView(),
     );
   }
 }
 
 class _SendMoneyView extends StatelessWidget {
-  final dynamic currentUser;
-  const _SendMoneyView({required this.currentUser});
+  const _SendMoneyView();
 
   @override
   Widget build(BuildContext context) {
@@ -125,11 +121,17 @@ class _SendMoneyView extends StatelessWidget {
                         ? SendMoneyStrings.sending
                         : SendMoneyStrings.sendMoney,
                     icon: Icons.send,
-                    onPressed: state.isLoading || currentUser == null
+                    onPressed: state.isLoading
                         ? null
-                        : () {
-                      // Prevent sending money to self
-                      if (state.recipient == currentUser.username.toString()) {
+                        : () async {
+                      // Always await current user
+                      final currentUser = await context
+                          .read<SessionCubit>()
+                          .getCurrentUser();
+                      if (currentUser == null) return;
+
+                      // Prevent self transfer
+                      if (state.recipient == currentUser.username) {
                         showBottomMessage(
                           context: context,
                           title: SendMoneyStrings.failedTitle,
@@ -139,6 +141,7 @@ class _SendMoneyView extends StatelessWidget {
                         return;
                       }
 
+                      // Proceed with send
                       sendMoneyCubit.sendMoney(currentUser.id);
                     },
                   ),
