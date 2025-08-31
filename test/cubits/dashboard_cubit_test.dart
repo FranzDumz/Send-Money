@@ -36,7 +36,7 @@ void main() {
 
     // Provide a valid user in session
     when(() => mockSessionCubit.state).thenReturn(SessionValid(user: testUser));
-    whenListen(mockSessionCubit, Stream<SessionState>.empty());
+    whenListen(mockSessionCubit, const Stream<SessionState>.empty());
 
     dashboardCubit = DashboardCubit(
       sessionCubit: mockSessionCubit,

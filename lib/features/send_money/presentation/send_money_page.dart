@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sample/core/constants/send_money_strings.dart';
 import 'package:sample/core/widgets/app_bar.dart';
 import '../../../core/widgets/bottom_sheet.dart';
 import '../../../core/widgets/elevated_button.dart';
@@ -34,8 +35,8 @@ class SendMoneyPage extends StatelessWidget {
 }
 
 class _SendMoneyView extends StatelessWidget {
-  final dynamic currentUser; // replace with your User type
-  const _SendMoneyView({super.key, required this.currentUser});
+  final dynamic currentUser;
+  const _SendMoneyView({required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class _SendMoneyView extends StatelessWidget {
 
     return Scaffold(
       appBar: const ReusableAppBar(
-        title: 'Send Money',
+        title: SendMoneyStrings.sendMoneyTitle,
         showLogout: true,
         showBack: true,
       ),
@@ -56,7 +57,7 @@ class _SendMoneyView extends StatelessWidget {
             if (state.errorMessage != null) {
               showBottomMessage(
                 context: context,
-                title: 'Failed',
+                title: SendMoneyStrings.failedTitle,
                 message: state.errorMessage!,
                 isSuccess: false,
               );
@@ -65,7 +66,7 @@ class _SendMoneyView extends StatelessWidget {
             if (state.successMessage != null) {
               showBottomMessage(
                 context: context,
-                title: 'Success',
+                title: SendMoneyStrings.successTitle,
                 message: state.successMessage!,
                 isSuccess: true,
               );
@@ -77,11 +78,12 @@ class _SendMoneyView extends StatelessWidget {
                 // Recipient Field
                 TextFormField(
                   decoration: InputDecoration(
-                    labelText: 'Recipient',
+                    labelText: SendMoneyStrings.recipientLabel,
                     labelStyle: theme.textTheme.bodyMedium,
-                    hintText: 'Enter recipient name or account',
+                    hintText: SendMoneyStrings.recipientHint,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color:
+                      theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -99,11 +101,12 @@ class _SendMoneyView extends StatelessWidget {
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Amount',
+                    labelText: SendMoneyStrings.amountLabel,
                     labelStyle: theme.textTheme.bodyMedium,
-                    hintText: 'Enter amount',
+                    hintText: SendMoneyStrings.amountHint,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color:
+                      theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -118,11 +121,24 @@ class _SendMoneyView extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ReusableElevatedButton(
-                    text: state.isLoading ? "Sending..." : 'Send Money',
+                    text: state.isLoading
+                        ? SendMoneyStrings.sending
+                        : SendMoneyStrings.sendMoney,
                     icon: Icons.send,
                     onPressed: state.isLoading || currentUser == null
                         ? null
                         : () {
+                      // Prevent sending money to self
+                      if (state.recipient == currentUser.username.toString()) {
+                        showBottomMessage(
+                          context: context,
+                          title: SendMoneyStrings.failedTitle,
+                          message: SendMoneyStrings.selfTransferError,
+                          isSuccess: false,
+                        );
+                        return;
+                      }
+
                       sendMoneyCubit.sendMoney(currentUser.id);
                     },
                   ),

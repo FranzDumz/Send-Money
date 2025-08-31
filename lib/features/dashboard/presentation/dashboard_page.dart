@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/dashboard_strings.dart';
 import '../../../core/widgets/app_bar.dart';
 import '../../../core/widgets/elevated_button.dart';
 import '../cubit/dashboard_cubit.dart';
@@ -20,7 +21,6 @@ class SendMoneyDashBoard extends StatelessWidget {
     return BlocListener<SessionCubit, SessionState>(
       listener: (context, sessionState) {
         if (sessionState is SessionInvalid) {
-          // Navigate to login if session is invalid
           context.go('/login');
         }
       },
@@ -32,7 +32,7 @@ class SendMoneyDashBoard extends StatelessWidget {
               remoteDataSource: DashboardRemoteDataSourceImpl(),
             ),
           ),
-        )..refreshUserData(), // Refresh immediately when created
+        )..refreshUserData(),
         child: const _SendMoneyDashBoardView(),
       ),
     );
@@ -78,89 +78,91 @@ class _SendMoneyDashBoardViewState extends State<_SendMoneyDashBoardView> {
             color: colorScheme.primary,
             child: user == null
                 ? Center(
-              child: isLoading
-                  ? const CircularProgressIndicator()
-                  : state is UserRefreshError
-                  ? Text('Failed to load user data',
-                  style: theme.textTheme.bodyLarge)
-                  : const SizedBox.shrink(),
-            )
+                    child: isLoading
+                        ? const CircularProgressIndicator()
+                        : state is UserRefreshError
+                            ? Text(DashBoardStrings.failedToLoadUser,
+                                style: theme.textTheme.bodyLarge)
+                            : const SizedBox.shrink(),
+                  )
                 : ListView(
-              padding: const EdgeInsets.all(16),
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: [
-                ValueListenableBuilder<bool>(
-                  valueListenable: showBalance,
-                  builder: (context, value, _) {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                      elevation: 4,
-                      color: theme.cardColor,
-                      margin: const EdgeInsets.symmetric(vertical: 16),
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Text('Your Balance',
-                                    style: theme.textTheme.titleMedium),
-                                const SizedBox(height: 8),
-                                Text(
-                                  value
-                                      ? '₱${user.balance.toStringAsFixed(2)}'
-                                      : '*' *
-                                      '₱${user.balance.toStringAsFixed(2)}'
-                                          .length,
-                                  style: theme.textTheme.headlineMedium
-                                      ?.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                    padding: const EdgeInsets.all(16),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      ValueListenableBuilder<bool>(
+                        valueListenable: showBalance,
+                        builder: (context, value, _) {
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16)),
+                            elevation: 4,
+                            color: theme.cardColor,
+                            margin: const EdgeInsets.symmetric(vertical: 16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(24.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Hi " +user.name,
+                                          style: theme.textTheme.titleLarge),
+                                      const SizedBox(height: 8),
+                                      Text(DashBoardStrings.yourBalance,
+                                          style: theme.textTheme.titleMedium),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        value
+                                            ? '₱${user.balance.toStringAsFixed(2)}'
+                                            : '*' *
+                                                '₱${user.balance.toStringAsFixed(2)}'
+                                                    .length,
+                                        style: theme.textTheme.headlineMedium
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                        value
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        color: theme.iconTheme.color),
+                                    onPressed: () =>
+                                        showBalance.value = !showBalance.value,
+                                  ),
+                                ],
+                              ),
                             ),
-                            IconButton(
-                              icon: Icon(
-                                  value
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: theme.iconTheme.color),
-                              onPressed: () =>
-                              showBalance.value = !showBalance.value,
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: ReusableElevatedButton(
+                              text: DashBoardStrings.sendMoney,
+                              icon: Icons.send,
+                              onPressed: () => context.push('/send'),
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 16),
+                          Flexible(
+                            child: ReusableElevatedButton(
+                              text: DashBoardStrings.transactions,
+                              icon: Icons.history,
+                              onPressed: () => context.push('/transactions'),
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Flexible(
-                      child: ReusableElevatedButton(
-                        text: 'Send Money',
-                        icon: Icons.send,
-                        onPressed: () => context.push('/send'),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Flexible(
-                      child: ReusableElevatedButton(
-                        text: 'Transaction',
-                        icon: Icons.history,
-                        onPressed: () =>
-                            context.push('/transactions'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                    ],
+                  ),
           ),
         );
       },

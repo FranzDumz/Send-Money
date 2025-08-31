@@ -1,8 +1,6 @@
-import 'dart:developer';
-import 'dart:io';
+
 import 'package:dio/dio.dart';
-import 'package:crypto/crypto.dart';
-import 'package:dio/io.dart';
+
 
 import 'network_strings.dart';
 
@@ -32,29 +30,29 @@ class ApiClient {
   }
 
   // SSL Pinning
-  void _setupSslPinning() {
-    final adapter = _dio.httpClientAdapter;
-
-    if (adapter is IOHttpClientAdapter) {
-      adapter.createHttpClient = () {
-        final client = HttpClient();
-
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
-          final hash = sha256.convert(cert.der).toString();
-          final isValid = hash == NetworkStrings.certificateSha256;
-          if (!isValid) {
-            log(' SSL pinning failed: $hash');
-          } else {
-            log(' SSL pinning passed');
-          }
-          return isValid;
-        };
-
-        return client;
-      };
-    }
-  }
+  // void _setupSslPinning() {
+  //   final adapter = _dio.httpClientAdapter;
+  //
+  //   if (adapter is IOHttpClientAdapter) {
+  //     adapter.createHttpClient = () {
+  //       final client = HttpClient();
+  //
+  //       client.badCertificateCallback =
+  //           (X509Certificate cert, String host, int port) {
+  //         final hash = sha256.convert(cert.der).toString();
+  //         final isValid = hash == NetworkStrings.certificateSha256;
+  //         if (!isValid) {
+  //           log(' SSL pinning failed: $hash');
+  //         } else {
+  //           log(' SSL pinning passed');
+  //         }
+  //         return isValid;
+  //       };
+  //
+  //       return client;
+  //     };
+  //   }
+  // }
 
   // --------------------- Requests ---------------------
   Future<Response> get(String endpoint,

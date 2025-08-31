@@ -6,7 +6,7 @@ void showBottomMessage({
   required BuildContext context,
   required String title,
   required String message,
-  required bool isSuccess, // true = success, false = error
+  required bool isSuccess,
 }) {
   showModalBottomSheet(
     context: context,

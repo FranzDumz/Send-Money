@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sample/core/constants/app_strings.dart';
 
 import '../../core/storage/flutter_secure_storage.dart';
 import '../auth/presentation/cubit/session/session_cubit.dart';
@@ -18,7 +19,6 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    // Create the cubit and check session
     final cubit = SessionCubit(SecureStorageService());
     cubit.checkSession();
 
@@ -52,7 +52,7 @@ class _SplashPageState extends State<SplashPage> {
                SizedBox(height: 24),
               // App name or tagline
                Text(
-                "SendMoney App",
+                 AppStrings.sendMoneyApp,
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../features/dashboard/cubit/dashboard_cubit.dart';
+
 import '../../features/auth/presentation/cubit/session/session_cubit.dart';
 
 class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {

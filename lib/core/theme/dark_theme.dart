@@ -6,11 +6,13 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.light,
       primaryColor: Colors.white,
-      scaffoldBackgroundColor: Colors.white, // background white
+      scaffoldBackgroundColor: Colors.white,
+      // background white
 
       // AppBar
       appBarTheme: AppBarTheme(
-        backgroundColor: Colors.green[800], // dark green app bar
+        backgroundColor: Colors.green[800],
+        // dark green app bar
         foregroundColor: Colors.white,
         elevation: 2,
         titleTextStyle: const TextStyle(
@@ -57,10 +59,14 @@ class AppTheme {
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
+        titleLarge: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
       ),
 
       // Icon theme
-      iconTheme:  IconThemeData(color: Colors.green[800]),
+      iconTheme: IconThemeData(color: Colors.green[800]),
 
       // Input decoration
       inputDecorationTheme: InputDecorationTheme(
@@ -134,6 +140,11 @@ class AppTheme {
       textTheme: const TextTheme(
         bodyMedium: TextStyle(color: Colors.white),
         titleMedium: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        // Text theme
+        titleLarge: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),

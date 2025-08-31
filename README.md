@@ -12,7 +12,7 @@ The app simulates sending money, viewing wallet balance, and checking transactio
 -  Wallet Dashboard (view balance & refresh user info)
 -  Send Money (transfer money to another user)
 -  Transaction History (list of past transactions)
--  Unit tests included for Cubits & UseCases (not done)**( SORRY HUHU )**
+-  Unit tests included for Cubits & UseCases **(not done) ( SORRY HUHU )**
 
 ---
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/constants/transaction_strings.dart';
 import '../../../core/utils/date_formatters.dart';
 import '../../../core/widgets/app_bar.dart';
 import '../../../core/widgets/bottom_sheet.dart';
@@ -20,7 +21,7 @@ class TransactionHistoryPage extends StatelessWidget {
     final currentUser = sessionCubit.getCurrentUser();
 
     if (currentUser == null) {
-      return const Center(child: Text('No user session available'));
+      return const Center(child: Text(TransactionStrings.noUserSession));
     }
 
     final remoteDataSource = TransactionRemoteDataSourceImpl();
@@ -31,12 +32,11 @@ class TransactionHistoryPage extends StatelessWidget {
       create: (_) => TransactionCubit(useCase)..loadTransactions(currentUser.id),
       child: const _TransactionHistoryView(),
     );
-
   }
 }
 
 class _TransactionHistoryView extends StatelessWidget {
-  const _TransactionHistoryView({super.key});
+  const _TransactionHistoryView();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class _TransactionHistoryView extends StatelessWidget {
 
     return Scaffold(
       appBar: const ReusableAppBar(
-        title: 'Transaction History',
+        title: TransactionStrings.transactionHistoryTitle,
         showLogout: true,
         showBack: true,
       ),
@@ -55,7 +55,7 @@ class _TransactionHistoryView extends StatelessWidget {
             if (state.errorMessage != null) {
               showBottomMessage(
                 context: context,
-                title: 'Failed',
+                title: TransactionStrings.failedTitle,
                 message: state.errorMessage!,
                 isSuccess: false,
               );
@@ -69,7 +69,7 @@ class _TransactionHistoryView extends StatelessWidget {
             if (state.transactions.isEmpty) {
               return Center(
                 child: Text(
-                  'No transactions yet',
+                  TransactionStrings.noTransactions,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               );

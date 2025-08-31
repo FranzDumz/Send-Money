@@ -27,6 +27,8 @@ class SendMoneyCubit extends Cubit<SendMoneyState> {
       return;
     }
 
+
+
     emit(state.copyWith(
         isLoading: true, errorMessage: null, successMessage: null));
 

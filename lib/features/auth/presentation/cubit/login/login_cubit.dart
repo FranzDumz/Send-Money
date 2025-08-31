@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/storage/flutter_secure_storage.dart';
 import '../../../../../domain/entities/user_entity.dart';
 import '../../../../../domain/usecases/login_usecase.dart';
 import '../session/session_cubit.dart';

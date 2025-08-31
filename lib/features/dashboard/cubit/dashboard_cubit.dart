@@ -62,6 +62,7 @@ class DashboardCubit extends Cubit<DashBoardState> {
     }
   }
 
+
   void _refreshIfNotRefreshing() {
     if (!_isRefreshing) {
       refreshUserData(updateSession: false);
