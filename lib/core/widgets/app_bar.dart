@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../features/dashboard/cubit/dashboard_cubit.dart';
+import '../../features/auth/presentation/cubit/session/session_cubit.dart';
 
 class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -14,7 +15,7 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.actions,
     this.showLogout = false,
-    this.showBack = false, // default: show back
+    this.showBack = false,
   });
 
   @override
@@ -31,8 +32,8 @@ class ReusableAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.logout, color: Colors.white),
           tooltip: 'Logout',
           onPressed: () async {
-            final cubit = context.read<DashboardCubit>();
-            await cubit.clearUser();
+            final cubit = context.read<SessionCubit>();
+            await cubit.clearSession();
             context.go('/login');
           },
         ),

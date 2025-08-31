@@ -82,7 +82,7 @@ class _LoginViewState extends State<LoginView> {
                   } else if (state is LoginSuccess) {
                     if (Navigator.canPop(context)) {
                       LoadingDialog.hide(context);
-                      context.go('/dashboard');
+                      context.pushReplacement('/dashboard');
                     }
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text(LoginStrings.loginSuccess)),

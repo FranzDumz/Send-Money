@@ -3,21 +3,44 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sample/core/widgets/app_bar.dart';
-import '../../../core/storage/flutter_secure_storage.dart';
 import '../../../core/widgets/bottom_sheet.dart';
 import '../../../core/widgets/elevated_button.dart';
 import '../../../domain/usecases/send_money_usecase.dart';
 import '../../auth/presentation/cubit/session/session_cubit.dart';
-
 import '../cubit/send_money_cubit.dart';
 import '../cubit/send_money_state.dart';
+import '../../../data/repository/send_money_repository_impl.dart';
+import '../../../data/datasources/send_money_datasource.dart';
 
 class SendMoneyPage extends StatelessWidget {
   const SendMoneyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final sessionCubit = context.read<SessionCubit>();
+    final currentUser = sessionCubit.getCurrentUser();
+
+    return BlocProvider(
+      create: (_) => SendMoneyCubit(
+        SendMoneyUseCase(
+          SendMoneyRepositoryImpl(
+            SendMoneyRemoteDataSource(),
+          ),
+        ),
+      ),
+      child: _SendMoneyView(currentUser: currentUser),
+    );
+  }
+}
+
+class _SendMoneyView extends StatelessWidget {
+  final dynamic currentUser; // replace with your User type
+  const _SendMoneyView({super.key, required this.currentUser});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final sendMoneyCubit = context.read<SendMoneyCubit>();
 
     return Scaffold(
       appBar: const ReusableAppBar(
@@ -49,12 +72,6 @@ class SendMoneyPage extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            final sendMoneyCubit = context.read<SendMoneyCubit>();
-            final sessionCubit =
-                context.read<SessionCubit>();
-            final currentUser =
-                sessionCubit.getCurrentUser();
-
             return Column(
               children: [
                 // Recipient Field
@@ -64,8 +81,7 @@ class SendMoneyPage extends StatelessWidget {
                     labelStyle: theme.textTheme.bodyMedium,
                     hintText: 'Enter recipient name or account',
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -87,8 +103,7 @@ class SendMoneyPage extends StatelessWidget {
                     labelStyle: theme.textTheme.bodyMedium,
                     hintText: 'Enter amount',
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -108,8 +123,8 @@ class SendMoneyPage extends StatelessWidget {
                     onPressed: state.isLoading || currentUser == null
                         ? null
                         : () {
-                            sendMoneyCubit.sendMoney(currentUser.id);
-                          },
+                      sendMoneyCubit.sendMoney(currentUser.id);
+                    },
                   ),
                 ),
               ],

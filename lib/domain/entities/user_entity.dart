@@ -3,7 +3,7 @@ class UserEntity {
   final String username;
   final String name;
   final double balance;
-  final List<Map<String, dynamic>> transactions; // ✅ fix here
+  final List<Map<String, dynamic>> transactions;
 
   UserEntity({
     required this.id,

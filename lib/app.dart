@@ -30,20 +30,6 @@ class MyApp extends StatelessWidget {
             BlocProvider<SessionCubit>(
               create: (_) => SessionCubit(SecureStorageService())..checkSession(),
             ),
-            BlocProvider<DashboardCubit>(
-              create: (context) => DashboardCubit(
-                sessionCubit: context.read<SessionCubit>(),
-              )..loadUserFromSession(),
-            ),
-            BlocProvider<SendMoneyCubit>(
-              create: (_) => SendMoneyCubit(
-                SendMoneyUseCase(
-                  SendMoneyRepositoryImpl(
-                    SendMoneyRemoteDataSource(), // 👈 your data source
-                  ),
-                ),
-              ),
-            ),
           ],
           child: MaterialApp.router(
             title: AppStrings.sendMoneyApp,

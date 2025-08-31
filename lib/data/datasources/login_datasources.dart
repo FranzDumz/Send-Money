@@ -21,7 +21,7 @@ class LoginRemoteDataSource {
       }
 
       if (matchingUser == null) {
-        throw Exception('Invalid username or password');
+        throw 'Invalid username or password';
       }
 
       return UserEntity(
@@ -34,7 +34,7 @@ class LoginRemoteDataSource {
             .toList(),
       );
     } catch (e) {
-      throw Exception('Login failed: $e');
+      throw 'Login failed: $e';
     }
   }
 }
