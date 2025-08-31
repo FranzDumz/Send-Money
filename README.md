@@ -86,18 +86,6 @@ classDiagram
     }
 
     User --> Transaction
-    
-sequenceDiagram
-    participant U as User
-    participant W as WalletCubit
-    participant R as Repository
-    participant API as RemoteDataSource
 
-    U->>W: refreshWallet()
-    W->>R: fetchWallet()
-    R->>API: GET /wallet
-    API-->>R: Wallet Data
-    R-->>W: Wallet Data
-    W-->>U: Updated Balance
 
 

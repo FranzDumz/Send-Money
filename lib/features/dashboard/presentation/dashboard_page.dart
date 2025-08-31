@@ -48,7 +48,7 @@ class _SendMoneyDashBoardView extends StatefulWidget {
 }
 
 class _SendMoneyDashBoardViewState extends State<_SendMoneyDashBoardView> {
-  final ValueNotifier<bool> showBalance = ValueNotifier(true);
+  final ValueNotifier<bool> showBalance = ValueNotifier(false);
 
   @override
   void dispose() {
@@ -108,7 +108,7 @@ class _SendMoneyDashBoardViewState extends State<_SendMoneyDashBoardView> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Hi " +user.name,
+                                      Text("Hi ${user.name}",
                                           style: theme.textTheme.titleLarge),
                                       const SizedBox(height: 8),
                                       Text(DashBoardStrings.yourBalance,
