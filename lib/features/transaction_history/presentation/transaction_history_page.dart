@@ -18,22 +18,34 @@ class TransactionHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sessionCubit = context.read<SessionCubit>();
-    final currentUser = sessionCubit.getCurrentUser();
 
-    if (currentUser == null) {
-      return const Center(child: Text(TransactionStrings.noUserSession));
-    }
+    return FutureBuilder(
+      future: sessionCubit.getCurrentUser(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    final remoteDataSource = TransactionRemoteDataSourceImpl();
-    final repository = TransactionRepositoryImpl(remoteDataSource: remoteDataSource);
-    final useCase = GetTransactionsUseCase(repository: repository);
+        final currentUser = snapshot.data;
+        if (currentUser == null) {
+          return const Center(child: Text(TransactionStrings.noUserSession));
+        }
 
-    return BlocProvider(
-      create: (_) => TransactionCubit(useCase)..loadTransactions(currentUser.id),
-      child: const _TransactionHistoryView(),
+        final remoteDataSource = TransactionRemoteDataSourceImpl();
+        final repository =
+        TransactionRepositoryImpl(remoteDataSource: remoteDataSource);
+        final useCase = GetTransactionsUseCase(repository: repository);
+
+        return BlocProvider(
+          create: (_) =>
+          TransactionCubit(useCase)..loadTransactions(currentUser.id),
+          child: const _TransactionHistoryView(),
+        );
+      },
     );
   }
 }
+
 
 class _TransactionHistoryView extends StatelessWidget {
   const _TransactionHistoryView();
@@ -79,7 +91,7 @@ class _TransactionHistoryView extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
               onRefresh: () async {
                 final sessionCubit = context.read<SessionCubit>();
-                final currentUser = sessionCubit.getCurrentUser();
+                final currentUser = await sessionCubit.getCurrentUser();
                 if (currentUser != null) {
                   await cubit.loadTransactions(currentUser.id);
                 }

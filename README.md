@@ -63,6 +63,7 @@ Here are some sample accounts you can use to login:
 - Always use valid credentials from the table; invalid login attempts will result in an error
   message.
 - **Unit tests are not done ( SORRY HUHU )**
+- also no diagrams ( SORRY AGAIN )
 
 
 

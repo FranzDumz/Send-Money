@@ -12,9 +12,12 @@ import '../../auth/presentation/cubit/session/session_state.dart';
 import '../../../data/datasources/dashboard_datacource.dart';
 import '../../../data/repository/dashboard_repositoy_impl.dart';
 import '../../../domain/usecases/dashboard_usecase.dart';
+import '../../../domain/entities/user_entity.dart';
 
 class SendMoneyDashBoard extends StatelessWidget {
-  const SendMoneyDashBoard({super.key});
+  final UserEntity? initialUser; // 👈 take user from login
+
+  const SendMoneyDashBoard({super.key, this.initialUser});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,8 @@ class SendMoneyDashBoard extends StatelessWidget {
               remoteDataSource: DashboardRemoteDataSourceImpl(),
             ),
           ),
-        )..refreshUserData(),
+          initialUser: initialUser, // 👈 triggers refresh inside cubit
+        ),
         child: const _SendMoneyDashBoardView(),
       ),
     );
@@ -64,7 +68,9 @@ class _SendMoneyDashBoardViewState extends State<_SendMoneyDashBoardView> {
     return BlocBuilder<DashboardCubit, DashBoardState>(
       builder: (context, state) {
         final isLoading = state is UserRefreshLoading;
-        final user = state is UserRefreshSuccess ? state.user : null;
+        final user = state is UserRefreshSuccess
+            ? state.user
+            : context.read<DashboardCubit>().user;
 
         return Scaffold(
           backgroundColor: theme.scaffoldBackgroundColor,
@@ -156,7 +162,10 @@ class _SendMoneyDashBoardViewState extends State<_SendMoneyDashBoardView> {
                             child: ReusableElevatedButton(
                               text: DashBoardStrings.transactions,
                               icon: Icons.history,
-                              onPressed: () => context.push('/transactions'),
+                              onPressed: () {
+
+                                context.push('/transactions');
+                              },
                             ),
                           ),
                         ],

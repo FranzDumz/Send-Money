@@ -29,9 +29,11 @@ class SessionCubit extends Cubit<SessionState> {
     emit(SessionInvalid());
   }
 
-  UserEntity? getCurrentUser() {
-    if (state is SessionValid) {
-      return (state as SessionValid).user;
+  /// Always get the current user from storage
+  Future<UserEntity?> getCurrentUser() async {
+    final userJson = await storage.read('user');
+    if (userJson != null && userJson.isNotEmpty) {
+      return UserEntity.fromJson(jsonDecode(userJson));
     }
     return null;
   }

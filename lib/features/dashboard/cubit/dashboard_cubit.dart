@@ -17,7 +17,18 @@ class DashboardCubit extends Cubit<DashBoardState> {
     required this.sessionCubit,
     required this.getUserUseCase,
     this.autoRefresh = true,
+    UserEntity? initialUser, // 👈 new param
   }) : super(DashBoardInitial()) {
+    // set user from login if provided
+    if (initialUser != null) {
+      _user = initialUser;
+      _refreshIfNotRefreshing();
+    } else if (sessionCubit.state is SessionValid) {
+      _user = (sessionCubit.state as SessionValid).user;
+      if (autoRefresh) _refreshIfNotRefreshing();
+    }
+
+    // listen for session changes
     sessionCubit.stream.listen((state) {
       if (state is SessionValid) {
         _user = state.user;
@@ -26,14 +37,7 @@ class DashboardCubit extends Cubit<DashBoardState> {
         _user = null;
       }
     });
-
-    if (autoRefresh && sessionCubit.state is SessionValid) {
-      _user = (sessionCubit.state as SessionValid).user;
-      _refreshIfNotRefreshing();
-    }
   }
-
-
 
   UserEntity? get user => _user;
 
@@ -62,10 +66,9 @@ class DashboardCubit extends Cubit<DashBoardState> {
     }
   }
 
-
-  void _refreshIfNotRefreshing() {
+  void _refreshIfNotRefreshing({bool updateSession = false}) {
     if (!_isRefreshing) {
-      refreshUserData(updateSession: false);
+      refreshUserData(updateSession: updateSession);
     }
   }
 }

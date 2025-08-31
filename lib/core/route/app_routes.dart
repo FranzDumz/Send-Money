@@ -2,6 +2,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:sample/features/auth/presentation/page/login_page.dart';
 
+import '../../domain/entities/user_entity.dart';
 import '../../features/dashboard/presentation/dashboard_page.dart';
 import '../../features/send_money/presentation/send_money_page.dart';
 import '../../features/splash/splash.dart';
@@ -24,8 +25,10 @@ class AppRouter {
       ),
       GoRoute(
         path: '/dashboard',
-        name: 'dashboard',
-        builder: (context, state) => const SendMoneyDashBoard(),
+        builder: (context, state) {
+          final user = state.extra as UserEntity?;
+          return SendMoneyDashBoard(initialUser: user);
+        },
       ),
       GoRoute(
         path: '/send',
