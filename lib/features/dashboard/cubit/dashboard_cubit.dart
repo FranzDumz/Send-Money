@@ -8,30 +8,32 @@ import 'dashboard_state.dart';
 class DashboardCubit extends Cubit<DashBoardState> {
   final SessionCubit sessionCubit;
   final DashBoardUseCase getUserUseCase;
-  UserEntity? _user;
+  final bool autoRefresh;
 
+  UserEntity? _user;
   bool _isRefreshing = false;
 
   DashboardCubit({
     required this.sessionCubit,
     required this.getUserUseCase,
+    this.autoRefresh = true,
   }) : super(DashBoardInitial()) {
-    // Listen for session updates
     sessionCubit.stream.listen((state) {
       if (state is SessionValid) {
         _user = state.user;
-        _refreshIfNotRefreshing();
+        if (autoRefresh) _refreshIfNotRefreshing();
       } else if (state is SessionInvalid) {
         _user = null;
       }
     });
 
-    // Initialize user if session already valid
-    if (sessionCubit.state is SessionValid) {
+    if (autoRefresh && sessionCubit.state is SessionValid) {
       _user = (sessionCubit.state as SessionValid).user;
       _refreshIfNotRefreshing();
     }
   }
+
+
 
   UserEntity? get user => _user;
 

@@ -92,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
                       LoadingDialog.hide(context);
                     }
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.message)),
+                      SnackBar(content: Text(state.error.toString())),
                     );
                   }
                 },
