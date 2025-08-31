@@ -66,38 +66,6 @@ Here are some sample accounts you can use to login:
 
 
 
-### Class Diagram AND Sequence Diagram
-```mermaid
-classDiagram
-    class User {
-      -String id
-      -String name
-      -double balance
-      +deposit(amount)
-      +withdraw(amount)
-    }
 
-    class Transaction {
-      -String id
-      -String senderId
-      -String receiverId
-      -double amount
-      -DateTime date
-    }
-
-    User --> Transaction
-
-sequenceDiagram
-    participant U as User
-    participant W as WalletCubit
-    participant R as Repository
-    participant API as RemoteDataSource
-
-    U->>W: refreshWallet()
-    W->>R: fetchWallet()
-    R->>API: GET /wallet
-    API-->>R: Wallet Data
-    R-->>W: Wallet Data
-    W-->>U: Updated Balance
 
 
